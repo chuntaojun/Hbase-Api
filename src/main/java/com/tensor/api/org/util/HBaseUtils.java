@@ -13,7 +13,7 @@ public class HBaseUtils {
     public static String TABLE_NAME = "News";
     public static final String cf1 = "cf1";
     public static final String cf2 = "cf2";
-    public static final String id = "id";
+    public static final String cf1_id = "id";
     public static final String cf1_newTitle = "newTitle";
     public static final String cf1_newType = "newType";
     public static final String cf1_author = "author";
@@ -38,7 +38,8 @@ public class HBaseUtils {
     //转换Json
     public JsonObject jsonObjectTool(Result result, JsonObject jsonObject1) {
 
-        jsonObject1.addProperty("id",Bytes.toString(result.getRow()));
+        jsonObject1.addProperty("rowkey",Bytes.toString(result.getRow()));
+        jsonObject1.addProperty("id", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_id))));
         jsonObject1.addProperty("author", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_author))));
         jsonObject1.addProperty("newTitle", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_newTitle))));
         jsonObject1.addProperty("newType", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_newType))));
