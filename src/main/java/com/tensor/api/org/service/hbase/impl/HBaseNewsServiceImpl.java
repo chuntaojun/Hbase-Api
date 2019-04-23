@@ -12,18 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service(value = "HBaseNewsService")
-@RunWith(SpringRunner.class)
-@SpringBootTest
 /**
  * @author peijianan
  */
@@ -44,7 +39,9 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             boolean b = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_newType, news.getNewType());
             boolean c = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_newTitle, news.getNewTitle());
             boolean d = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_text, news.getText());
-            flag = a && b && c && d;    //判断是否都存储成功
+            boolean e = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_id,Long.toString(news.getId()));
+            //文章编号id原数据是long类型，存进去是String类型。如果需要按照文章编号检索，需要String.toLong一下
+            flag = a && b && c && d && e;    //判断是否都存储成功
             resultData.setData(flag);
             if (flag) {
                 resultData.setCode(HttpStatus.OK.value());
@@ -68,7 +65,6 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             HBaseUtils hbBaseUtils = new HBaseUtils();
             JsonArray array = new JsonArray();
             ResultScanner res = hBaseBasicService.scantable(hbBaseUtils.TABLE_NAME);
-            System.out.println("good");
             for (Result ress : res) {
 
                 JsonObject jsonObject = new JsonObject();
@@ -79,10 +75,13 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             resultData.setData(array);
             resultData.setCode(HttpStatus.OK.value());
             resultData.setMsg("Ok!!!");
+            res.close();
         } catch (Exception e) {
             resultData.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             resultData.setMsg(e.getLocalizedMessage());
             resultData.setData(false);
+        }finally {
+
         }
 
         return Mono.justOrEmpty(resultData);
@@ -100,7 +99,7 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             for (Result ress : res) {
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("id",Bytes.toString(ress.getRow()));
+                jsonObject.addProperty("rowkey",Bytes.toString(ress.getRow()));
                 jsonObject.addProperty("author", Bytes.toString(ress.getValue(Bytes.toBytes(hbBaseUtils.cf1), Bytes.toBytes(hbBaseUtils.cf1_author))));
                 array.add(jsonObject);
 
@@ -108,12 +107,13 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             resultData.setData(array);
             resultData.setCode(HttpStatus.OK.value());
             resultData.setMsg("OK!");
+            res.close();
         } catch (Exception e) {
             resultData.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             resultData.setMsg(e.getLocalizedMessage());
             resultData.setData(false);
         }
-        System.out.println(resultData);
+
         return Mono.justOrEmpty(resultData);
     }
 
@@ -128,7 +128,7 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             for (Result ress : res) {
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("id", Bytes.toString(ress.getRow()));
+                jsonObject.addProperty("rowkey", Bytes.toString(ress.getRow()));
                 jsonObject.addProperty("newTitle", Bytes.toString(ress.getValue(Bytes.toBytes(hbBaseUtils.cf1), Bytes.toBytes(hbBaseUtils.cf1_newTitle))));
                 array.add(jsonObject);
             }
@@ -140,7 +140,7 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             resultData.setMsg(e.getLocalizedMessage());
             resultData.setData(false);
         }
-        System.out.println(resultData);
+
         return Mono.justOrEmpty(resultData);
     }
 
@@ -169,7 +169,7 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             resultData.setMsg(e.getLocalizedMessage());
             resultData.setData(false);
         }
-        System.out.println(resultData);
+        
         return Mono.justOrEmpty(resultData);
     }
 
