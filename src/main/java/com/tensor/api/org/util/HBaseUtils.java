@@ -39,7 +39,7 @@ public class HBaseUtils {
     public JsonObject jsonObjectTool(Result result, JsonObject jsonObject1) {
 
         jsonObject1.addProperty("rowkey",Bytes.toString(result.getRow()));
-        jsonObject1.addProperty("id", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_id))));
+        jsonObject1.addProperty("id", Bytes.toLong(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_id))));
         jsonObject1.addProperty("author", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_author))));
         jsonObject1.addProperty("newTitle", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_newTitle))));
         jsonObject1.addProperty("newType", Bytes.toString(result.getValue(Bytes.toBytes(cf1), Bytes.toBytes(cf1_newType))));
