@@ -39,8 +39,7 @@ public class HBaseNewsServiceImpl implements HBaseNewsService {
             boolean b = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_newType, news.getNewType());
             boolean c = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_newTitle, news.getNewTitle());
             boolean d = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_text, news.getText());
-            boolean e = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_id,Long.toString(news.getId()));
-            //文章编号id原数据是long类型，存进去是String类型。如果需要按照文章编号检索，需要String.toLong一下
+            boolean e = hBaseBasicService.putdata(hbBaseUtils.TABLE_NAME, id, hbBaseUtils.cf1, hbBaseUtils.cf1_id,news.getId());
             flag = a && b && c && d && e;    //判断是否都存储成功
             resultData.setData(flag);
             if (flag) {

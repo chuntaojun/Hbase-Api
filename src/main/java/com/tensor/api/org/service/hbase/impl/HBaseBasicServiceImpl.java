@@ -53,6 +53,7 @@ public class HBaseBasicServiceImpl implements HBaseBasicService {
         //存数据
         try {
             Table tName = connection.getTable(TableName.valueOf(tableName));
+
             org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(Bytes.toBytes(rowkey));
             put.add(cf.getBytes(), cloumn.getBytes(), value.getBytes());
             tName.put(put);
@@ -64,6 +65,21 @@ public class HBaseBasicServiceImpl implements HBaseBasicService {
 
     }
 
+    public boolean putdata(String tableName, String rowkey, String cf, String cloumn, long value) throws Exception {
+        //存数据
+        try {
+            Table tName = connection.getTable(TableName.valueOf(tableName));
+
+            org.apache.hadoop.hbase.client.Put put = new org.apache.hadoop.hbase.client.Put(Bytes.toBytes(rowkey));
+            put.add(cf.getBytes(), cloumn.getBytes(), Bytes.toBytes(value));
+            tName.put(put);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
     @Override
     public boolean delData(String tableName, String rowkey, String cf, String cloumn) throws Exception {
         //删数据
