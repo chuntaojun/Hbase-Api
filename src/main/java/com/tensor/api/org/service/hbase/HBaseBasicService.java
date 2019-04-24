@@ -12,6 +12,7 @@ public interface HBaseBasicService {
 
     //2.根据传入的 表名 行键 列族名 列名 将数据插入数据库 返回是否成功
     boolean putdata(String tableName, String rowkey, String cf, String column, String value) throws Exception;
+    boolean putdata(String tableName, String rowkey, String cf, String cloumn, long value)throws Exception;
 
     //3.根据传入的 表名 行键 列族名 列名 删除数据 返回是否成功
     boolean delData(String tableName, String rowkey, String cf, String column) throws Exception;
