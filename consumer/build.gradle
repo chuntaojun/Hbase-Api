@@ -1,0 +1,40 @@
+
+version = '0.0.1'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compile.exclude	module:	"spring-boot-starter-tomcat"
+    compile.exclude group: "javax.servlet", module: "servlet-api"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+    }
+}
+
+dependencies {
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+
+jar {
+    baseName = 'nacos-api'
+    version =  'v0.0.1'
+}
